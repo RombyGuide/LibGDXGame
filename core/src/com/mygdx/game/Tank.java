@@ -4,30 +4,41 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class Tank {
     private MyGdxGame game;
     private Texture texture;
-    private float x;
-    private float y;
+    private Texture textureTurret;
+    private Vector2 position;
     private float speed;
     private float angle;
+    private float turretAngle;
 
     public Tank(MyGdxGame game) {
         this.game = game;
+        this.position = new Vector2(100.0f, 100.0f);
         this.texture = new Texture("1.png");
-        this.x = 0.0f;
-        this.y = 0.0f;
+        this.textureTurret = new Texture("3.png");
         this.speed = 100.0f;
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(texture, x - 16, y - 19.5f, 16, 19.5f, 32, 32,
+        batch.draw(texture, position.x - 16, position.y - 19.5f, 16, 19.5f, 32, 32,
                 1, 1, angle, 0, 0, 32, 32, false, false);
+        batch.draw(textureTurret, position.x - 3f, position.y - 5, 16, 19.5f, 6, 30,
+                1, 1, turretAngle, 0, 0, 32, 32, false, false);
     }
 
     public void update(float dt) {
         checkMoment(dt);
+        float mx = Gdx.input.getX();
+        float my = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+        float angleTo = Utils.getAngle(position.x, position.y, mx, my);
+        turretAngle = Utils.makeRotation(turretAngle, angleTo, 380.0f, dt);
+        turretAngle = Utils.angleToFromNegPiToPosPi(turretAngle);
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             fire();
         }
@@ -35,19 +46,19 @@ public class Tank {
 
     public void checkMoment(float dt) {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            x -= speed * dt;
+            position.x -= speed * dt;
             angle = 270.0f;
 
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            x += speed * dt;
+            position.x += speed * dt;
             angle = 90.0f;
 
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            y += speed * dt;
+            position.y += speed * dt;
             angle = 0.0f;
 
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            y -= speed * dt;
+            position.y -= speed * dt;
             angle = 180.0f;
         }
     }
@@ -55,7 +66,7 @@ public class Tank {
     public void fire() {
         if (!game.getBullet().isActive()) {
             float angleRad = (float) Math.toRadians(angle);
-            game.getBullet().activate(x, y, 500.0f * (float) Math.sin(angleRad), 500.0f * (float) Math.cos(angleRad));
+            game.getBullet().activate(position.x, position.y, 500.0f * (float) Math.sin(angleRad), 500.0f * (float) Math.cos(angleRad));
         }
     }
 }
