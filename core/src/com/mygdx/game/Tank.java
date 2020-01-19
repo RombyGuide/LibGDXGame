@@ -26,8 +26,8 @@ public class Tank {
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x - 16, position.y - 19.5f, 16, 19.5f, 32, 32,
                 1, 1, angle, 0, 0, 32, 32, false, false);
-        batch.draw(textureTurret, position.x - 3f, position.y - 5, 16, 19.5f, 6, 30,
-                1, 1, turretAngle, 0, 0, 32, 32, false, false);
+        batch.draw(textureTurret, position.x, position.y, 0, 0, 30, 6,
+               1, 1, turretAngle, 0, 0, 30, 6, false, false);
     }
 
     public void update(float dt) {
@@ -65,7 +65,7 @@ public class Tank {
 
     public void fire() {
         if (!game.getBullet().isActive()) {
-            float angleRad = (float) Math.toRadians(angle);
+            float angleRad = (float) Math.toRadians(turretAngle - 90f);
             game.getBullet().activate(position.x, position.y, 500.0f * (float) Math.sin(angleRad), 500.0f * (float) Math.cos(angleRad));
         }
     }
