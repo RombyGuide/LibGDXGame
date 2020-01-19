@@ -10,6 +10,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Tank tank;
 	private Bullet bullet;
+	private BulletEmitter bulletEmitter;
+
+	public BulletEmitter getBulletEmitter() {
+		return bulletEmitter;
+	}
 
 	public Bullet getBullet() {
 		return bullet;
@@ -20,6 +25,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		tank = new Tank(this);
 		bullet = new Bullet();
+		bulletEmitter = new BulletEmitter();
 	}
 
 	@Override
@@ -30,17 +36,13 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		tank.render(batch);
-		if (bullet.isActive()) {
-			bullet.render(batch);
-		}
+		bulletEmitter.render(batch);
 		batch.end();
 	}
 
 	public void update(float dt) {
         tank.update(dt);
-        if (bullet.isActive()) {
-        	bullet.update(dt);
-		}
+        bulletEmitter.update(dt);
     }
 
 	@Override
